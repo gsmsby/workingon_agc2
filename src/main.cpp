@@ -39,12 +39,10 @@ extern unsigned int _HeapCCM_Limit;
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
 int
-main(int argc, char* argv[])
-{
+main(int argc, char* argv[]) {
 	/* initialize rtos */
 	/* define the heap regions for the rtos */
-	HeapRegion_t xhregions[] =
-	{
+	HeapRegion_t xhregions[] = {
 		{NULL, 0},
 		{NULL, 0}
 	};
@@ -61,8 +59,7 @@ main(int argc, char* argv[])
 	vTaskStartScheduler();
 
 	/* should never return, do something that makes sense */
-	while (1)
-	{
+	while (1) {
 	}
 }
 
