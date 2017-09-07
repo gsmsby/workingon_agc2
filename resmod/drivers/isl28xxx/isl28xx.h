@@ -1,6 +1,6 @@
 /******************************************************************************
  |
- |  	FILENAME:  resmodcommon.h
+ |  	FILENAME:  isl28xx.h
  |
  |	Copyright 2017 Adara Systems Ltd. as an unpublished work.
  |	All Rights Reserved.
@@ -20,24 +20,53 @@
  |	    DATE:		Sep 6, 2017
  |
  ******************************************************************************/
-#ifndef RESMODCOMMON_H_
-#define RESMODCOMMON_H_
+#ifndef DRIVERS_ISL28XXX_ISL28XX_H_
+#define DRIVERS_ISL28XXX_ISL28XX_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include <array>
+#include <stm32f4xx.h>
 /* Namespace declaration -----------------------------------------------------*/
-namespace resmod {
-/* Class definition ----------------------------------------------------------*/
-// The following types must be used to provide data to the calculation module
-typedef std::array<float, 300> VTable_t;
-typedef std::array<float, 300> ITable_t;
+namespace drivers {
 
-class CallBackInterface {
-public:
-  virtual void OnCallbackEvent() = 0;
-
-  virtual ~CallBackInterface() = default;
+struct ISL28XXXParams
+{
+  GPIO_InitTypeDef g0;
+  GPIO_InitTypeDef g0z;
+  GPIO_InitTypeDef g1;
+  GPIO_InitTypeDef g1z;
 };
 
-} // namespace resmod
-#endif /* RESMODCOMMON_H_ */
+enum class ISL28XXXGainSelector
+{
+  kg0,
+  kg1
+};
+
+enum class ISL28XXXIOState
+{
+  kHigh,
+  kLow,
+  kHighZ
+};
+
+/* Class definition ----------------------------------------------------------*/
+class ISL28XXX {
+ public:
+  ISL28XXX(const ISL28XXXParams &params);
+  virtual ~ISL28XXX();
+
+  /* unused */
+  ISL28XXX(const ISL28XXX&) = delete;
+  ISL28XXX& operator=(const ISL28XXX&) = delete;
+
+  virtual int8_t setgain(uint32_t gain) = 0;
+
+ protected:
+  void writestate(ISL28XXXGainSelector s, ISL28XXXIOState ios);
+
+ private:
+  ISL28XXXParams params_;
+};
+}  // namespace drivers
+
+#endif /* DRIVERS_ISL28XXX_ISL28XX_H_ */

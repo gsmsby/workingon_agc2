@@ -1,6 +1,6 @@
 /******************************************************************************
  |
- |  	FILENAME:  resmodcommon.h
+ |  	FILENAME:  driverscommon.h
  |
  |	Copyright 2017 Adara Systems Ltd. as an unpublished work.
  |	All Rights Reserved.
@@ -17,27 +17,22 @@
  |  	NOTES:
  |
  |  	AUTHOR(S):  Roque
- |	    DATE:		Sep 6, 2017
+ |	    DATE:		Sep 7, 2017
  |
  ******************************************************************************/
-#ifndef RESMODCOMMON_H_
-#define RESMODCOMMON_H_
+#ifndef DRIVERS_DRIVERSCOMMON_H_
+#define DRIVERS_DRIVERSCOMMON_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include <array>
-/* Namespace declaration -----------------------------------------------------*/
-namespace resmod {
-/* Class definition ----------------------------------------------------------*/
-// The following types must be used to provide data to the calculation module
-typedef std::array<float, 300> VTable_t;
-typedef std::array<float, 300> ITable_t;
 
+/* Namespace declaration -----------------------------------------------------*/
+namespace drivers {
+/* Class definition ----------------------------------------------------------*/
 class CallBackInterface {
 public:
   virtual void OnCallbackEvent() = 0;
 
   virtual ~CallBackInterface() = default;
 };
-
-} // namespace resmod
-#endif /* RESMODCOMMON_H_ */
+} // namespace drivers
+#endif /* DRIVERS_DRIVERSCOMMON_H_ */

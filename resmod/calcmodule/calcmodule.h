@@ -27,7 +27,7 @@
 #include <array>
 #include <cstdint>
 
-#include "../resmodcommon.h"
+#include "resmod/resmodcommon.h"
 /* Namespace declaration -----------------------------------------------------*/
 namespace resmod {
 

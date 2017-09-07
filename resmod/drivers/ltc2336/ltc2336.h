@@ -17,7 +17,7 @@
  |  	NOTES:
  |
  |  	AUTHOR(S):  Roque
- |	    DATE:		Sep 6, 2017
+ |	    DATE:		Sep 7, 2017
  |
  ******************************************************************************/
 #ifndef DRIVERS_LTC2336_LTC2336_H_
@@ -25,62 +25,44 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <cstdint>
-#include <vector>
-
-#include <stm32f4xx.h>
-
-#include "../../resmodcommon.h"
 /* Namespace declaration -----------------------------------------------------*/
-namespace resmod {
-
-struct LTC2336Params
-{
-  SPI_TypeDef *spibase;
-  SPI_InitTypeDef spi_channel;
-
-  TIM_TypeDef timbase;
-  TIM_TimeBaseInitTypeDef tim_channel;
-
-  GPIO_InitTypeDef busy;
-  GPIO_InitTypeDef cnv;
-};
+namespace drivers {
 /* Class definition ----------------------------------------------------------*/
-// Sets up DMA acquisition from an LTC2336 ADC.  The following resources will
-// need to be provided:
-// 1 clock module to generage a 100 kHz conv signal
-// 1 trigger module to cause the DMA module to retrieve a single sample
+class LTC2336LowLevelInterface {
+ public:
+  virtual ~LTC2336LowLevelInterface() = default;
+
+  virtual void LowLevelStartConversion() = 0;
+  virtual void LowLevelRead() = 0;
+};
+// LTC2336 is a relatively simple devices that can run at up to 250 kSPS.
+// Example usage:
+// LTC2336LowLevelInterface lowlevelinterface;
+// LTC2336 ltc2336(lowlevelinterface);
+// ltc2336.StartConversion();
+// -- AFTER CONVERSION COMPLETES --
+// ltc2336.ReadConvertedResult();
+//
+// It is required to notify this driver that the conversion is complete.  There
+// is a busy flag that needs to be monitored by the low level driver.  On a high
+// to low transition a conversion is complete.  The driver will need to call
+// NotifyConversionComplete.
 class LTC2336 {
  public:
-  LTC2336(const LTC2336Params &params);
+  LTC2336(LTC2336LowLevelInterface lowlevel);
   ~LTC2336();
 
-  /* unused */
+  // Unused
   LTC2336(const LTC2336&) = delete;
   LTC2336& operator=(const LTC2336&) = delete;
 
-  int8_t Start();
-  int8_t Stop();
-  int8_t Reset();
+  // Main methods
+  void StartConversion();
+  uint32_t ReadConvertedResult();
 
-  int8_t SetMaximumSampleCount(uint32_t samplecount);
-  int8_t SetDataDestination(VTable_t &vtable);
-  inline uint32_t RemainingTransfers() const {return transfersremaining_;}
-
-  void RegisterTransferCompleteEvent(CallBackInterface * callback);
-
-  static void BusyISR(LTC2336 &instance);
-
- private:
-  LTC2336Params params_;
-  bool busy_;
-
-  uint32_t transfersetpoint_;
-  uint32_t transfersremaining_;
-  VTable_t * destination_arr_;
-
-  DMA_InitTypeDef dma_params_;
-
-  std::vector<CallBackInterface *> transfercompletecallbacks_;
+  // Callback
+  void NotifyConversionComplete();
 };
-} // namespace resmod
+
+} // namespace drivers
 #endif /* DRIVERS_LTC2336_LTC2336_H_ */

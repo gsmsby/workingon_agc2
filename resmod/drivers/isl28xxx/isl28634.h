@@ -1,6 +1,6 @@
 /******************************************************************************
  |
- |  	FILENAME:  resmodcommon.h
+ |  	FILENAME:  isl28634.h
  |
  |	Copyright 2017 Adara Systems Ltd. as an unpublished work.
  |	All Rights Reserved.
@@ -20,24 +20,30 @@
  |	    DATE:		Sep 6, 2017
  |
  ******************************************************************************/
-#ifndef RESMODCOMMON_H_
-#define RESMODCOMMON_H_
+#ifndef DRIVERS_ISL28XXX_ISL28634_H_
+#define DRIVERS_ISL28XXX_ISL28634_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include <array>
+#include "isl28xx.h"
+
+#include <vector>
+#include <cstdint>
 /* Namespace declaration -----------------------------------------------------*/
-namespace resmod {
+namespace drivers {
 /* Class definition ----------------------------------------------------------*/
-// The following types must be used to provide data to the calculation module
-typedef std::array<float, 300> VTable_t;
-typedef std::array<float, 300> ITable_t;
+class ISL28634 : public ISL28XXX {
+ public:
+  ISL28634(const ISL28XXXParams &params);
 
-class CallBackInterface {
-public:
-  virtual void OnCallbackEvent() = 0;
+  virtual int8_t setgain(uint32_t gain);
 
-  virtual ~CallBackInterface() = default;
+ private:
+  struct GainSettings {
+    uint32_t gain;
+    ISL28XXXIOState iostate_g0;
+    ISL28XXXIOState iostate_g1;
+  };
+  static const GainSettings gainsettings_[9];
 };
-
-} // namespace resmod
-#endif /* RESMODCOMMON_H_ */
+} // namespace drivers
+#endif /* DRIVERS_ISL28XXX_ISL28634_H_ */
