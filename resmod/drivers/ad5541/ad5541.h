@@ -47,7 +47,7 @@ enum class AD5541IncrementMode
 
 class AD5541 {
  public:
-  AD5541(AD5541LowLevelInterface lowlevel);
+  AD5541(AD5541LowLevelInterface &lowlevel);
   ~AD5541();
 
   // Unused
@@ -76,7 +76,7 @@ class AD5541 {
 
   struct DataOutDetails
   {
-    uint16_t * const dat;
+    uint16_t * dat;
     uint32_t size;
   };
 

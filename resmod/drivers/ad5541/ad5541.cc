@@ -29,7 +29,8 @@ using namespace drivers;
 /* Private variables ---------------------------------------------------------*/
 
 /* Constructor(s) / Destructor -----------------------------------------------*/
-AD5541::AD5541(AD5541LowLevelInterface lowlevel) {
+AD5541::AD5541(AD5541LowLevelInterface &lowlevel)
+:lowlevel_(lowlevel) {
 }
 
 AD5541::~AD5541() {

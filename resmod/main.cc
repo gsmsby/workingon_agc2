@@ -1,6 +1,6 @@
 /******************************************************************************
  |
- | 	FILENAME:  main.cpp
+ | 	FILENAME:  resmod.cc
  |
  |	Copyright 2016 Adara Systems Ltd. as an unpublished work.
  |	All Rights Reserved.
@@ -38,6 +38,11 @@ extern unsigned int _HeapCCM_Limit;
 #pragma GCC diagnostic ignored "-Wmissing-declarations"
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
+// Upon entering main the following are true:
+// Sysclk: 180 MHz
+// APB1: 45 MHz
+// APB2: 90 MHz
+// Flash: 5 WS
 int
 main(int argc, char* argv[]) {
 	/* initialize rtos */
