@@ -1,6 +1,6 @@
 /******************************************************************************
  |
- |  	FILENAME:  resmod.h
+ |  	FILENAME:  stm32f4nvic.h
  |
  |	Copyright 2017 Adara Systems Ltd. as an unpublished work.
  |	All Rights Reserved.
@@ -17,33 +17,23 @@
  |  	NOTES:
  |
  |  	AUTHOR(S):  Roque
- |	    DATE:		Sep 8, 2017
+ |	    DATE:		Sep 11, 2017
  |
  ******************************************************************************/
-#ifndef RESMOD_H_
-#define RESMOD_H_
+#ifndef LOWLEVELUTIL_STM32F4NVIC_H_
+#define LOWLEVELUTIL_STM32F4NVIC_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include <FreeRTOS.h>
-#include <task.h>
+#include <cstdint>
+
+#include <stm32f4xx.h>
 /* Namespace declaration -----------------------------------------------------*/
-namespace resmod {
+namespace stm32f4 {
 /* Class definition ----------------------------------------------------------*/
-class ResmodMainTask {
+class NVICConfiguration {
  public:
-  ResmodMainTask();
-  ~ResmodMainTask();
-
-  /* unused */
-  ResmodMainTask(const ResmodMainTask&) = delete;
-  ResmodMainTask& operator=(const ResmodMainTask&) = delete;
-
- private:
-  TaskHandle_t taskhandle_;
-
- private:
-  // FreeRTOS
-  static void ResmodTask(void *inst);
+  static void Enable(uint8_t nvic_irq, uint8_t prio);
+  static void Disable(uint8_t nvic_irq);
 };
-} // namespace resmod
-#endif /* RESMOD_H_ */
+} // namespace stm32f4
+#endif /* LOWLEVELUTIL_STM32F4NVIC_H_ */

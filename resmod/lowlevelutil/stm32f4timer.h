@@ -29,25 +29,65 @@
 namespace stm32f4 {
 
 /* Class definition ----------------------------------------------------------*/
-struct STM32F4TimerParams{
-  TIM_TypeDef timbase;
+class TimerBase;
+
+struct TimerBaseParams{
+  TIM_TypeDef *timbase;
 };
 
-class STM32F4TimerOutputGenerator {
-  STM32F4TimerOutputGenerator(const STM32F4TimerParams &tparams);
-  ~STM32F4TimerOutputGenerator();
+enum class OutputCompareChannel {
+  kCH1,
+  kCH2,
+  kCH3,
+  kCH4
+};
+
+enum class OutputCompareMode {
+  kOUTPUT,
+  kTIMING
+};
+
+// Simple helper class for setting up output compares in output toggle mode
+class TimerOutputCompare {
+ public:
+  TimerOutputCompare(TimerBase &tb, OutputCompareChannel ch);
+ ~TimerOutputCompare();
 
   /* unused */
-  STM32F4TimerOutputGenerator(const STM32F4TimerOutputGenerator&) = delete;
-  STM32F4TimerOutputGenerator& operator=(const STM32F4TimerOutputGenerator&) =
-      delete;
+  TimerOutputCompare(const TimerOutputCompare&) = delete;
+  TimerOutputCompare& operator=(const TimerOutputCompare&) = delete;
 
+  void Start();
+  void Stop();
+
+  void ConfigureCompare(uint32_t const compareval);
+
+ private:
+  struct OCFunctions {
+    uint16_t TIM_Channel;
+    void (*TIM_OCInit)(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct);
+    void (*TIM_SetCompare)(TIM_TypeDef* TIMx, uint32_t Compare1);
+  };
+
+  TimerBase &timebase_;
+  OCFunctions fnptr_;
+};
+
+// Simple helper class for setting up timer bases
+class TimerBase {
  public:
+  TimerBase(const TimerBaseParams &tparams);
+  ~TimerBase();
+
+  /* unused */
+  TimerBase(const TimerBase&) = delete;
+  TimerBase& operator=(const TimerBase&) = delete;
+
   void Start();
   void Stop();
 
   uint32_t PeripheralFrequency();
-  void Configure();
+  void Configure(uint32_t frequency);
 
  private:
   enum class BusName {
@@ -56,13 +96,25 @@ class STM32F4TimerOutputGenerator {
   };
 
   struct TimerBusDetails {
-    TIM_TypeDef timbase;
+    TIM_TypeDef *timbase;
     BusName bus;
+    uint32_t periphcommand;
   };
-  static const TimerBusDetails timerbusdetails_[14];
 
-  STM32F4TimerParams timerparams_;
+  struct PeriphLibraryHooks {
+    void (*RCC_APBPeriphClockCmd)(uint32_t RCC_APB1Periph,
+        FunctionalState NewState);
+  };
+
+  static const TimerBusDetails timerbusdetails_[14];
+  PeriphLibraryHooks libhooks_;
+  TimerBaseParams timerparams_;
   uint32_t busdetailsindex_;
+
+ private:
+  const TimerBusDetails& BusDetails() const;
+
+  friend class TimerOutputCompare;
 };
 }
 #endif /* LOWLEVELUTIL_STM32F4TIMER_H_ */

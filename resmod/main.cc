@@ -23,7 +23,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include <FreeRTOS.h>
 #include <task.h>
+#include <segger/SEGGER_RTT.h>
 #include <segger/SEGGER_SYSVIEW.h>
+
+#include <resmod/resmod.h>
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -58,7 +61,10 @@ main(int argc, char* argv[]) {
 
 	/* perform support lib initialization */
 	/* segger debug utils init */
-	SEGGER_SYSVIEW_Conf();
+  SEGGER_RTT_Init();
+  SEGGER_SYSVIEW_Conf();
+
+  new resmod::ResmodMainTask;
 
 	/* start the rtos */
 	vTaskStartScheduler();

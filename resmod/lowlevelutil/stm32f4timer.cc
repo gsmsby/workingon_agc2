@@ -27,30 +27,29 @@
 using namespace stm32f4;
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-const STM32F4TimerOutputGenerator::TimerBusDetails
-STM32F4TimerOutputGenerator::timerbusdetails_[14] = {
-    {TIM1, BusName::APB2},
-    {TIM2, BusName::APB1},
-    {TIM3, BusName::APB1},
-    {TIM4, BusName::APB1},
-    {TIM5, BusName::APB1},
-    {TIM6, BusName::APB1},
-    {TIM7, BusName::APB1},
-    {TIM8, BusName::APB2},
-    {TIM9, BusName::APB2},
-    {TIM10, BusName::APB2},
-    {TIM11, BusName::APB2},
-    {TIM12, BusName::APB1},
-    {TIM13, BusName::APB1},
-    {TIM14, BusName::APB1}
+const TimerBase::TimerBusDetails
+TimerBase::timerbusdetails_[14] = {
+    {TIM1, BusName::APB2, RCC_APB2Periph_TIM1},
+    {TIM2, BusName::APB1, RCC_APB1Periph_TIM2},
+    {TIM3, BusName::APB1, RCC_APB1Periph_TIM3},
+    {TIM4, BusName::APB1, RCC_APB1Periph_TIM4},
+    {TIM5, BusName::APB1, RCC_APB1Periph_TIM5},
+    {TIM6, BusName::APB1, RCC_APB1Periph_TIM6},
+    {TIM7, BusName::APB1, RCC_APB1Periph_TIM7},
+    {TIM8, BusName::APB2, RCC_APB2Periph_TIM8},
+    {TIM9, BusName::APB2, RCC_APB2Periph_TIM9},
+    {TIM10, BusName::APB2, RCC_APB2Periph_TIM10},
+    {TIM11, BusName::APB2, RCC_APB2Periph_TIM11},
+    {TIM12, BusName::APB1, RCC_APB1Periph_TIM12},
+    {TIM13, BusName::APB1, RCC_APB1Periph_TIM13},
+    {TIM14, BusName::APB1, RCC_APB1Periph_TIM14}
 };
 /* Constructor(s) / Destructor -----------------------------------------------*/
-STM32F4TimerOutputGenerator::STM32F4TimerOutputGenerator(
-    const STM32F4TimerParams& tparams)
-:timerparams_(tparams) {
+TimerBase::TimerBase(
+    const TimerBaseParams& tparams) : timerparams_(tparams) {
   uint32_t index = 0;
 
-  for (const STM32F4TimerOutputGenerator::TimerBusDetails & a :
+  for (const TimerBase::TimerBusDetails & a :
       timerbusdetails_) {
     if (a.timbase == tparams.timbase) {
       busdetailsindex_ = index;
@@ -59,30 +58,96 @@ STM32F4TimerOutputGenerator::STM32F4TimerOutputGenerator(
     ++index;
   }
 
-  switch(timerbusdetails_[busdetailsindex_]) {
+  // Load function pointers
+  const TimerBusDetails& busdetails = BusDetails();
+  switch(busdetails.bus) {
+    case BusName::APB1: {
+      libhooks_.RCC_APBPeriphClockCmd = RCC_APB1PeriphClockCmd;
+      break;
+    }
 
+    case BusName::APB2: {
+      libhooks_.RCC_APBPeriphClockCmd = RCC_APB2PeriphClockCmd;
+      break;
+    }
   }
+
+  libhooks_.RCC_APBPeriphClockCmd(busdetails.periphcommand, ENABLE);
 }
 
-STM32F4TimerOutputGenerator::~STM32F4TimerOutputGenerator() {
+TimerBase::~TimerBase() {
+  const TimerBusDetails& busdetails = BusDetails();
+
+  Stop();
+  libhooks_.RCC_APBPeriphClockCmd(busdetails.periphcommand, DISABLE);
 }
 
 
 /* Public methods ------------------------------------------------------------*/
 void
-STM32F4TimerOutputGenerator::Start() {
+TimerBase::Start() {
+  const TimerBusDetails& busdetails = BusDetails();
+  TIM_Cmd(busdetails.timbase, ENABLE);
 }
 
 void
-STM32F4TimerOutputGenerator::Stop() {
+TimerBase::Stop() {
+  const TimerBusDetails& busdetails = BusDetails();
+  TIM_Cmd(busdetails.timbase, DISABLE);
 }
 
 uint32_t
-STM32F4TimerOutputGenerator::PeripheralFrequency() {
+TimerBase::PeripheralFrequency() {
+  uint32_t pfreq;
+  RCC_ClocksTypeDef clocks;
+  const TimerBusDetails& busdetails = BusDetails();
+
+  RCC_GetClocksFreq(&clocks);
+  switch(busdetails.bus) {
+    case BusName::APB1: {
+      pfreq = clocks.PCLK1_Frequency;
+      break;
+    }
+
+    case BusName::APB2: {
+      pfreq = clocks.PCLK2_Frequency;
+      break;
+    }
+
+    default: {
+      pfreq = 0;
+    }
+  }
+
+  return pfreq * 2; // timer clocks operate at twice the APB freq
 }
 
 void
-STM32F4TimerOutputGenerator::Configure() {
+TimerBase::Configure(uint32_t freq) {
+  const TimerBusDetails& busdetails = BusDetails();
+  TIM_TimeBaseInitTypeDef timerparams;
+  uint32_t apbfreq = PeripheralFrequency();
+
+  TIM_TimeBaseStructInit(&timerparams);
+  timerparams.TIM_ClockDivision = TIM_CKD_DIV1;
+  timerparams.TIM_Prescaler = (apbfreq / 1E6) - 1;
+  timerparams.TIM_Period = (1.0 / freq / 1.0E-6) - 1;
+  timerparams.TIM_RepetitionCounter = 0;
+  timerparams.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInit(busdetails.timbase, &timerparams);
+
+//  TIM_OCInitTypeDef timerocparams;
+//  TIM_OCStructInit(&timerocparams);
+//  timerocparams.TIM_OCMode = TIM_OCMode_Toggle;
+//  timerocparams.TIM_OutputState = TIM_OutputState_Enable;
+//  TIM_OC1Init(busdetails.timbase, &timerocparams);
+
+  TIM_InternalClockConfig(busdetails.timbase);
 }
+
 /* Protected methods ---------------------------------------------------------*/
 /* Private methods -----------------------------------------------------------*/
+const TimerBase::TimerBusDetails&
+TimerBase::BusDetails() const {
+  return timerbusdetails_[busdetailsindex_];
+}
