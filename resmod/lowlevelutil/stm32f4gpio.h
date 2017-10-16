@@ -37,7 +37,8 @@ class GPIOConfiguration {
   static void MakeInput(GPIO_TypeDef * const gpio, uint32_t const gpiopin,
                         GPIOPuPd_TypeDef const pull = GPIO_PuPd_NOPULL);
   static void MakeAF(GPIO_TypeDef * const gpio, uint32_t const gpio_pin,
-                     uint8_t const gpio_af);
+                     uint8_t const gpio_af,
+                     GPIOPuPd_TypeDef const pull = GPIO_PuPd_NOPULL);
   static void MakeEXTI(GPIO_TypeDef * const gpio, uint32_t const gpio_pin,
                        uint32_t const exti_line,
                        uint32_t const exti_portsource,

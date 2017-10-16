@@ -30,7 +30,8 @@
 /* Namespace declaration -----------------------------------------------------*/
 namespace resmod {
 /* Class definition ----------------------------------------------------------*/
-typedef void (*SPIDMATriggerCallback)(uint32_t *databuff, uint32_t elements);
+typedef void (*SPIDMATriggerCallback)(int16_t const * const databuff,
+    uint32_t const elements);
 // Handles acquisition of data from the 18 bit ADC through the use of multiple
 // DMA transfers.
 class LTC2336SPIDMATrigger {
@@ -54,8 +55,7 @@ private:
   DMA_InitTypeDef dmatypedef_;
   DMA_Stream_TypeDef *dmay_streamx_;
   uint32_t acquisitioncount_;
-  uint32_t currentcount_;
-  uint32_t *buff_;
+  int16_t *buff_;
 
   SPIDMATriggerCallback triggercallback_;
 };

@@ -51,9 +51,10 @@ GPIOConfiguration::MakeInput(GPIO_TypeDef * const gpio,
 
 void
 GPIOConfiguration::MakeAF(GPIO_TypeDef * const gpio, uint32_t const gpio_pin,
-                          uint8_t const gpio_af) {
+                          uint8_t const gpio_af,
+                          GPIOPuPd_TypeDef const pull) {
   GPIO_InitTypeDef gpiotypedef = {
-      gpio_pin, GPIO_Mode_AF, GPIO_Speed_2MHz, GPIO_OType_PP, GPIO_PuPd_NOPULL
+      gpio_pin, GPIO_Mode_AF, GPIO_Speed_2MHz, GPIO_OType_PP, pull
   };
   GPIO_Init(gpio, &gpiotypedef);
 

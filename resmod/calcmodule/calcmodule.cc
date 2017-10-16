@@ -30,6 +30,8 @@ using namespace resmod;
 
 /* Constructor(s) / Destructor -----------------------------------------------*/
 CalcModule::CalcModule(const uint32_t gain) {
+  debugbuff_ = new int16_t[301];
+  debugindex_ = SEGGER_RTT_AllocUpBuffer("JScope_U2", debugbuff_, 602, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 
 }
 
@@ -40,7 +42,7 @@ CalcModule::~CalcModule() {
 ResistivityResults
 CalcModule::PerformCalculation(VTable_t& vt,
                                ITable_t& it) {
-
+  SEGGER_RTT_Write(debugindex_, it.begin(), 600);
 }
 /* Protected methods ---------------------------------------------------------*/
 /* Private methods -----------------------------------------------------------*/

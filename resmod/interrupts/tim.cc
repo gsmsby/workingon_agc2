@@ -24,57 +24,32 @@
 #include <stm32f4xx.h>
 
 #include <segger/SEGGER_SYSVIEW.h>
+
+#include <resmod/lowlevelutil/stm32f4timer.h>
+#include <resmod/acquisition/ltc2336spidmatrigger.h>
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-
+extern resmod::LTC2336SPIDMATrigger * g_adcitrigger;
+extern resmod::LTC2336SPIDMATrigger * g_adcvtrigger;
+extern stm32f4::TimerBase * g_adcv_timbase;  // Timer base clock
+extern stm32f4::TimerBase * g_adci_timbase;  // Timer base clock
 /* Constructor(s) / Destructor -----------------------------------------------*/
 /* Public methods ------------------------------------------------------------*/
 /* Protected methods ---------------------------------------------------------*/
 /* Private methods -----------------------------------------------------------*/
-//extern "C" {
+extern "C" {
+void TIM5_IRQHandler();
 //void TIM2_IRQHandler();
 //void TIM3_IRQHandler();
-//} // extern "C"
+} // extern "C"
 //
-//void TIM2_IRQHandler() {
-//  if (TIM2->SR & TIM_IT_CC1) {
-//    TIM2->SR = (uint16_t)~TIM_IT_CC1;
-//    if (TIM2->CCR1 == 9)
-//      TIM2->CCR1 = 4;
-//    else
-//      TIM2->CCR1 = 9;
-//  }
-//  if (TIM2->SR & TIM_IT_CC2) {
-//    TIM2->SR = (uint16_t)~TIM_IT_CC2;
-//    SPI_Cmd(SPI2, ENABLE);
-////    switch(TIM2->CCR2) {
-////      case 7: {
-////        TIM2->CCR2 = 8;
-////        break;
-////      }
-////      case 8: {
-////        TIM2->CCR2 = 9;
-////        break;
-////      }
-////      case 9: {
-////        TIM2->CCR2 = 0;
-////        break;
-////      }
-////      case 0: {
-////        TIM2->CCR2 = 7;
-////        break;
-////      }
-////    }
-//  }
-//}
-//
-//void TIM3_IRQHandler() {
-//  TIM3->SR = (uint16_t)~TIM_IT_CC1;
-//
-//  if (TIM3->CCR1 == 9)
-//    TIM3->CCR1 = 4;
-//  else
-//    TIM3->CCR1 = 9;
-//}
+void TIM5_IRQHandler() {
+  TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
+  TIM_ITConfig(TIM5, TIM_IT_Update, DISABLE);
+
+  g_adcvtrigger->Trigger();
+  g_adcitrigger->Trigger();
+}
+

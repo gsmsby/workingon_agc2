@@ -1,6 +1,6 @@
 /******************************************************************************
  |
- |  	FILENAME:  resmodcommon.h
+ |  	FILENAME:  calctask.h
  |
  |	Copyright 2017 Adara Systems Ltd. as an unpublished work.
  |	All Rights Reserved.
@@ -17,28 +17,41 @@
  |  	NOTES:
  |
  |  	AUTHOR(S):  Roque
- |	    DATE:		Sep 6, 2017
+ |	    DATE:		Sep 14, 2017
  |
  ******************************************************************************/
-#ifndef RESMODCOMMON_H_
-#define RESMODCOMMON_H_
+#ifndef CALCMODULE_CALCTASK_H_
+#define CALCMODULE_CALCTASK_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include <array>
-#include <cstdint>
+#include <FreeRTOS.h>
+#include <task.h>
+#include <semphr.h>
 /* Namespace declaration -----------------------------------------------------*/
 namespace resmod {
 /* Class definition ----------------------------------------------------------*/
-// The following types must be used to provide data to the calculation module
-typedef std::array<int16_t, 300> VTable_t;
-typedef std::array<int16_t, 300> ITable_t;
+class CalculationTask {
+ public:
+  CalculationTask();
+  ~CalculationTask();
 
-class CallBackInterface {
-public:
-  virtual void OnCallbackEvent() = 0;
+  /* unused */
+  CalculationTask(const CalculationTask&) = delete;
+  CalculationTask& operator=(const CalculationTask&) = delete;
 
-  virtual ~CallBackInterface() = default;
+  void ADCVComplete(int16_t const * const pv);
+  void ADCIComplete(int16_t const * const pi);
+
+ private:
+  TaskHandle_t taskhandle_;
+  SemaphoreHandle_t mutv_;
+  SemaphoreHandle_t muti_;
+  int16_t const * pvarr_;
+  int16_t const * piarr_;
+
+ private:
+  // FreeRTOS
+  static void CalcTask(void *inst);
 };
-
 } // namespace resmod
-#endif /* RESMODCOMMON_H_ */
+#endif /* CALCMODULE_CALCTASK_H_ */

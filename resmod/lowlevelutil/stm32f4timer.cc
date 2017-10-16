@@ -96,6 +96,11 @@ TimerBase::Stop() {
   TIM_Cmd(busdetails.timbase, DISABLE);
 }
 
+void TimerBase::Reset() {
+  const TimerBusDetails& busdetails = BusDetails();
+  TIM_SetCounter(busdetails.timbase, 0);
+}
+
 uint32_t
 TimerBase::PeripheralFrequency() {
   uint32_t pfreq;

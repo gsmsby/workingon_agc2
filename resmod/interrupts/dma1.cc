@@ -25,19 +25,40 @@
 
 #include <segger/SEGGER_SYSVIEW.h>
 #include <resmod/acquisition/ltc2336spidmatrigger.h>
+#include <resmod/excitation/excitation.h>
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+extern resmod::LTC2336SPIDMATrigger *g_adcvtrigger;
 extern resmod::LTC2336SPIDMATrigger *g_adcitrigger;
+extern resmod::Excitation *g_excitation;
 
 extern "C" {
+void DMA1_Stream2_IRQHandler();
 void DMA1_Stream3_IRQHandler();
+void DMA2_Stream0_IRQHandler();
 } // extern "C"
 
+void DMA1_Stream2_IRQHandler() {
+//  SEGGER_SYSVIEW_RecordEnterISR();
+  DMA_ClearITPendingBit(DMA1_Stream2, DMA_IT_TCIF2);
+  g_excitation->DMAComplete();
+//  SEGGER_SYSVIEW_RecordExitISR();
+}
+
 void DMA1_Stream3_IRQHandler() {
+//  SEGGER_SYSVIEW_RecordEnterISR();
   DMA_ClearITPendingBit(DMA1_Stream3, DMA_IT_TCIF3);
   g_adcitrigger->DMAComplete();
+//  SEGGER_SYSVIEW_RecordExitISR();
+}
+
+void DMA2_Stream0_IRQHandler() {
+//  SEGGER_SYSVIEW_RecordEnterISR();
+  DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+  g_adcvtrigger->DMAComplete();
+//  SEGGER_SYSVIEW_RecordExitISR();
 }
 /* Constructor(s) / Destructor -----------------------------------------------*/
 /* Public methods ------------------------------------------------------------*/

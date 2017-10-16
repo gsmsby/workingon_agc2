@@ -24,6 +24,7 @@
 #define RESMOD_H_
 
 /* Includes ------------------------------------------------------------------*/
+#include <stm32f4xx.h>
 #include <FreeRTOS.h>
 #include <task.h>
 /* Namespace declaration -----------------------------------------------------*/
@@ -44,6 +45,8 @@ class ResmodMainTask {
  private:
   // FreeRTOS
   static void ResmodTask(void *inst);
+  void InitADC_DMAOCSPITx(SPI_TypeDef * spibase, DMA_Stream_TypeDef * dxsy,
+                     uint32_t const channel);
 };
 } // namespace resmod
 #endif /* RESMOD_H_ */

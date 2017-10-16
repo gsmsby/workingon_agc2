@@ -59,6 +59,12 @@ main(int argc, char* argv[]) {
 								(size_t)&_HeapCCM_Begin);
 	vPortDefineHeapRegions(xhregions);
 
+//	// Debug settings
+	DBGMCU_APB2PeriphConfig(DBGMCU_TIM1_STOP, ENABLE);
+	DBGMCU_APB1PeriphConfig(DBGMCU_TIM2_STOP, ENABLE);
+	DBGMCU_APB1PeriphConfig(DBGMCU_TIM3_STOP, ENABLE);
+	DBGMCU_APB1PeriphConfig(DBGMCU_TIM5_STOP, ENABLE);
+
 	/* perform support lib initialization */
 	/* segger debug utils init */
   SEGGER_RTT_Init();

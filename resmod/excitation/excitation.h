@@ -1,6 +1,6 @@
 /******************************************************************************
  |
- |  	FILENAME:  resmodcommon.h
+ |  	FILENAME:  excitation.h
  |
  |	Copyright 2017 Adara Systems Ltd. as an unpublished work.
  |	All Rights Reserved.
@@ -17,28 +17,38 @@
  |  	NOTES:
  |
  |  	AUTHOR(S):  Roque
- |	    DATE:		Sep 6, 2017
+ |	    DATE:		Sep 18, 2017
  |
  ******************************************************************************/
-#ifndef RESMODCOMMON_H_
-#define RESMODCOMMON_H_
+#ifndef EXCITATION_EXCITATION_H_
+#define EXCITATION_EXCITATION_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include <array>
 #include <cstdint>
+
+#include <resmod/lowlevelutil/stm32f4timer.h>
 /* Namespace declaration -----------------------------------------------------*/
 namespace resmod {
 /* Class definition ----------------------------------------------------------*/
-// The following types must be used to provide data to the calculation module
-typedef std::array<int16_t, 300> VTable_t;
-typedef std::array<int16_t, 300> ITable_t;
+class Excitation {
+ public:
+  typedef void (*ExcitationCallback)(void);
 
-class CallBackInterface {
-public:
-  virtual void OnCallbackEvent() = 0;
+  Excitation(ExcitationCallback cb);
+  ~Excitation();
 
-  virtual ~CallBackInterface() = default;
+  void Start();
+  void Stop();
+
+  // Needs to be called when DMA transfer is complete
+  void DMAComplete();
+
+ private:
+  stm32f4::TimerBase dactimebase_;
+
+  ExcitationCallback dmaroll_;
+  static const uint32_t outputcompare_[2];
+  static const uint16_t sineout_[104];
 };
-
 } // namespace resmod
-#endif /* RESMODCOMMON_H_ */
+#endif /* EXCITATION_EXCITATION_H_ */

@@ -27,6 +27,8 @@
 #include <array>
 #include <cstdint>
 
+#include <segger/SEGGER_RTT.h>
+
 #include "resmod/resmodcommon.h"
 /* Namespace declaration -----------------------------------------------------*/
 namespace resmod {
@@ -53,6 +55,9 @@ public:
 	ResistivityResults PerformCalculation(VTable_t &vt, ITable_t &it);
 
 private:
+	int16_t * debugbuff_;
+	uint32_t debugindex_;
+
 	std::array<float, 256> n1_;
 	std::array<float, 256> n2_;
 	std::array<float, 256> n3_;

@@ -59,18 +59,34 @@ class TimerOutputCompare {
 
   void Start();
   void Stop();
+  void EnableDMATrigger();
+  void DisableDMATrigger();
+  void ForceOutputLow();
+  void ForceOutputHigh();
 
   void ConfigureCompare(uint32_t const compareval);
+  void ConfigureCompare(uint32_t const * const arrcomp, uint32_t const elem,
+                        DMA_Stream_TypeDef * dysx, uint32_t const channel);
 
  private:
   struct OCFunctions {
     uint16_t TIM_Channel;
     void (*TIM_OCInit)(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct);
-    void (*TIM_SetCompare)(TIM_TypeDef* TIMx, uint32_t Compare1);
+    void (*TIM_SetCompare)(TIM_TypeDef* TIMx, uint32_t Compare);
+    void (*TIM_ForcedOCConfig)(TIM_TypeDef* TIMx, uint16_t TIM_ForcedAction);
+    uint16_t DMA_CCRx;
+    uint16_t DMA_CMD_CCx;
   };
 
   TimerBase &timebase_;
+  TIM_TypeDef * tim_;
   OCFunctions fnptr_;
+  DMA_Stream_TypeDef * dmaysx_;
+  uint32_t * oclistparams_;
+  uint32_t elements_;
+
+  void InitDMACCx(const uint32_t channel);
+  void InitBaseOC(const uint32_t compareval);
 };
 
 // Simple helper class for setting up timer bases
@@ -85,6 +101,7 @@ class TimerBase {
 
   void Start();
   void Stop();
+  void Reset();
 
   uint32_t PeripheralFrequency();
   void Configure(uint32_t frequency);
