@@ -30,8 +30,8 @@
 namespace resmod {
 /* Class definition ----------------------------------------------------------*/
 // The following types must be used to provide data to the calculation module
-typedef std::array<int16_t, 300> VTable_t;
-typedef std::array<int16_t, 300> ITable_t;
+typedef std::array<int16_t, 312> VTable_t;
+typedef std::array<int16_t, 312> ITable_t;
 
 class CallBackInterface {
 public:

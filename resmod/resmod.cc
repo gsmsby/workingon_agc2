@@ -156,9 +156,9 @@ void ResmodMainTask::ResmodTask(void *inst) {
   // ---End Channel 2---
 
   LTC2336SPIDMATrigger adcvtrigger(ADCVCallback, DMA2_Stream0, DMA_Channel_3, SPI1,
-                                   300);
+                                   312);
   LTC2336SPIDMATrigger adcitrigger(ADCICallback, DMA1_Stream3, DMA_Channel_0, SPI2,
-                                   300);
+                                   312);
   g_adcvtrigger = &adcvtrigger;
   g_adcitrigger = &adcitrigger;
 

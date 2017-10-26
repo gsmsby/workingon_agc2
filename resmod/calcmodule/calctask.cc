@@ -21,6 +21,7 @@
  |
  ******************************************************************************/
 /* Includes ------------------------------------------------------------------*/
+
 #include "calctask.h"
 
 #include <stm32f4xx.h>
@@ -38,7 +39,7 @@ CalculationTask::CalculationTask():pvarr_(nullptr), piarr_(nullptr) {
   mutv_ = xSemaphoreCreateBinary();
   muti_ = xSemaphoreCreateBinary();
 
-  xTaskCreate(CalcTask, "calc_main", 1024 / sizeof(portSTACK_TYPE),
+  xTaskCreate(CalcTask, "calc_main", (32 * 1024) / sizeof(portSTACK_TYPE),
               this, 2, &taskhandle_);
 }
 
@@ -75,13 +76,15 @@ void CalculationTask::CalcTask(void* inst) {
     xSemaphoreTake(instance.mutv_, ~0);
     xSemaphoreTake(instance.muti_, ~0);
 
-    std::copy(instance.pvarr_, instance.pvarr_ + 300, waveform_v.begin());
-    std::copy(instance.piarr_, instance.piarr_ + 300, waveform_i.begin());
+    std::copy(instance.pvarr_, instance.pvarr_ + 312, waveform_v.begin());
+    std::copy(instance.piarr_, instance.piarr_ + 312, waveform_i.begin());
 
     TickType_t curtime = xTaskGetTickCount();
     calcmod.PerformCalculation(waveform_v, waveform_i);
 
+    //remove this later !
     vTaskDelayUntil(&curtime, 10);
+
     DMA_ClearITPendingBit(DMA1_Stream2, DMA_IT_TCIF2);
     DMA_ITConfig(DMA1_Stream2, DMA_IT_TC, ENABLE);
   }
