@@ -27,6 +27,8 @@
 #include <stm32f4xx.h>
 #include <FreeRTOS.h>
 #include <task.h>
+
+
 /* Namespace declaration -----------------------------------------------------*/
 namespace resmod {
 /* Class definition ----------------------------------------------------------*/

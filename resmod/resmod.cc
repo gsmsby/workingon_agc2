@@ -35,9 +35,14 @@
 #include <resmod/acquisition/ltc2336spidmatrigger.h>
 #include <resmod/calcmodule/calctask.h>
 #include <resmod/excitation/excitation.h>
+
+#include <resmod/drivers/isl28xxx/isl28634.h>
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 using namespace resmod;
+
+using namespace drivers;
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 CalculationTask * g_calctask;
@@ -46,6 +51,11 @@ LTC2336SPIDMATrigger * g_adcitrigger;
 LTC2336SPIDMATrigger * g_adcvtrigger;
 stm32f4::TimerBase * g_adcv_timbase;  // Timer base clock
 stm32f4::TimerBase * g_adci_timbase;  // Timer base clock
+
+//drivers::ISL28634  isl28634_i;
+
+
+
 /* Constructor(s) / Destructor -----------------------------------------------*/
 ResmodMainTask::ResmodMainTask() {
   xTaskCreate(ResmodTask, "resmod_main", 6144 / sizeof(portSTACK_TYPE),
@@ -88,6 +98,7 @@ void ResmodMainTask::ResmodTask(void *inst) {
 
   // CS signal for DAC
   stm32f4::GPIOConfiguration::MakeAF(GPIOA, GPIO_Pin_3, GPIO_AF_TIM5);
+  //stm32f4::GPIOConfiguration::MakeAF(GPIOA, GPIO_Pin_4, GPIO_AF_TIM5);
 
   // SPI1
   stm32f4::GPIOConfiguration::MakeAF(GPIOA,
@@ -110,6 +121,13 @@ void ResmodMainTask::ResmodTask(void *inst) {
                                      GPIO_Pin_12,  // SPI3MOSI
                                      GPIO_AF_SPI3,
                                      GPIO_PuPd_UP);
+
+
+  //IA gain setting
+
+
+  //isl28634_i.setgain(50);
+
 
   // ---DAC Configuration---
   Excitation excitation(ExcitationRoll);

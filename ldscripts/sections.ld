@@ -1,3 +1,5 @@
+
+
 /*
  * Default linker script for Cortex-M (it includes specifics for STM32F[34]xx).
  * 

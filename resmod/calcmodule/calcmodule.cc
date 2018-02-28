@@ -43,7 +43,10 @@ using namespace resmod;
 /* Constructor(s) / Destructor -----------------------------------------------*/
 CalcModule::CalcModule(const uint32_t gain) {
 
-  debugbuff_ = new int16_t[313];
+  //debugbuff_ = new int16_t[313];
+  //debugindex_ = SEGGER_RTT_AllocUpBuffer("JScope_U2", debugbuff_, 626, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+
+  debugbuff_ = new float[313];
   debugindex_ = SEGGER_RTT_AllocUpBuffer("JScope_U2", debugbuff_, 626, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 
 }
@@ -72,8 +75,9 @@ CalcModule::PerformCalculation(VTable_t& vt,
 	float avg_resist;
 	float calibration_constant = 1;
 
-	uint16_t j;
+
 	float dc_offset;
+	uint16_t j;
 
 	float32_t* inputf32_lpf;
 	float32_t* outputf32_lpf;
@@ -93,6 +97,7 @@ CalcModule::PerformCalculation(VTable_t& vt,
 		//assuming 16 bit ADC unsigned
 		temp_i[j] = 0.00003051757*it[j];
 
+	SEGGER_RTT_Write(0, temp_i, 312);
 	//DC offset removal
 	dc_offset = 0;
  	for (j=0; j < MAX_RECORD_NO; j++)
@@ -120,10 +125,10 @@ CalcModule::PerformCalculation(VTable_t& vt,
 		mul_v_cosine[j] = temp_v[j] * CalcModule::ref_cosine_[j];
 
 	for (j=0; j < MAX_RECORD_NO; j++)
-		mul_i_sine[j] = temp_v[j] * CalcModule::ref_sine_[j];
+		mul_i_sine[j] = temp_i[j] * CalcModule::ref_sine_[j];
 
 	for (j=0; j < MAX_RECORD_NO; j++)
-		mul_i_cosine[j] = temp_v[j] * CalcModule::ref_cosine_[j];
+		mul_i_cosine[j] = temp_i[j] * CalcModule::ref_cosine_[j];
 
 
 	//filtering voltage
@@ -178,7 +183,8 @@ CalcModule::PerformCalculation(VTable_t& vt,
 
 
 
-  SEGGER_RTT_Write(debugindex_, it.begin(), 624);
+  //SEGGER_RTT_Write(debugindex_, it.begin(), 624);
+
 
 
 }
