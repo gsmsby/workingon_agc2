@@ -22,6 +22,29 @@
  |
  ******************************************************************************/
 /* Includes ------------------------------------------------------------------*/
+
+#define V_PGA_G4_Pin GPIO_Pin_13
+
+#define V_PGA_G3_Pin GPIO_Pin_14
+
+#define V_PGA_G2_Pin GPIO_Pin_15
+
+
+#define I_PGA_G0_Pin GPIO_Pin_7
+
+#define I_PGA_G1_Pin GPIO_Pin_4
+
+#define I_PGA_G2_Pin GPIO_Pin_5
+
+#define I_PGA_G3_Pin GPIO_Pin_0
+
+#define I_PGA_G4_Pin GPIO_Pin_1
+
+#define V_PGA_G0_Pin GPIO_Pin_6
+
+#define V_PGA_G1_Pin GPIO_Pin_7
+
+
 #include "resmod.h"
 
 #include <stm32f4xx.h>
@@ -123,7 +146,36 @@ void ResmodMainTask::ResmodTask(void *inst) {
                                      GPIO_PuPd_UP);
 
 
-  //IA gain setting
+  //PGA281 gain setting
+    //pga current gain 64
+  /*HAL_GPIO_WritePin(GPIOB, I_PGA_G3_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, I_PGA_G2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, I_PGA_G1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, I_PGA_G0_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, I_PGA_G4_Pin, GPIO_PIN_RESET);*/
+
+
+  stm32f4::GPIOConfiguration::MakeOutput(GPIOB, I_PGA_G4_Pin|I_PGA_G3_Pin);
+  stm32f4::GPIOConfiguration::MakeOutput(GPIOC, I_PGA_G2_Pin);
+  stm32f4::GPIOConfiguration::MakeOutput(GPIOA, I_PGA_G1_Pin|I_PGA_G0_Pin);
+
+  ///void GPIO_SetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
+
+  GPIO_SetBits (GPIOB,I_PGA_G3_Pin);
+  GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
+
+
+  //pga voltage gain 32
+  /*HAL_GPIO_WritePin(GPIOC, V_PGA_G3_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, V_PGA_G2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, V_PGA_G1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, V_PGA_G0_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, V_PGA_G4_Pin, GPIO_PIN_RESET);*/
+
+  stm32f4::GPIOConfiguration::MakeOutput(GPIOB, V_PGA_G1_Pin|V_PGA_G0_Pin);
+  stm32f4::GPIOConfiguration::MakeOutput(GPIOC, V_PGA_G3_Pin|V_PGA_G2_Pin|V_PGA_G4_Pin);
+
+  GPIO_SetBits (GPIOC,V_PGA_G3_Pin);
 
 
   //isl28634_i.setgain(50);
