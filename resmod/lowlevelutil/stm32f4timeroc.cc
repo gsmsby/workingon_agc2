@@ -75,6 +75,14 @@ TimerOutputCompare::TimerOutputCompare(TimerBase &tb,
 
   const TimerBase::TimerBusDetails& busdetails = timebase_.BusDetails();
   tim_ = busdetails.timbase;
+
+  if (tim_ == TIM1) {
+	  TIM_BDTRInitTypeDef bd;
+	  TIM_BDTRStructInit(&bd);
+	  bd.TIM_AutomaticOutput = TIM_AutomaticOutput_Enable;
+	  bd.TIM_Break = TIM_Break_Disable;
+	  TIM_BDTRConfig(tim_, &bd);
+  }
 }
 
 TimerOutputCompare::~TimerOutputCompare() {

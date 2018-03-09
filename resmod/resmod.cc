@@ -116,8 +116,8 @@ void ResmodMainTask::ResmodTask(void *inst) {
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3, ENABLE);
 
   // Conv signals for ADC
-  stm32f4::GPIOConfiguration::MakeAF(GPIOA, GPIO_Pin_8, GPIO_AF_TIM1);
-  stm32f4::GPIOConfiguration::MakeAF(GPIOA, GPIO_Pin_0, GPIO_AF_TIM2);
+  stm32f4::GPIOConfiguration::MakeAF(GPIOA, GPIO_Pin_8, GPIO_AF_TIM1);	//TIM1 Voltage ADC
+  stm32f4::GPIOConfiguration::MakeAF(GPIOA, GPIO_Pin_0, GPIO_AF_TIM2);	//TIm2 Current ADC
 
   // CS signal for DAC
   stm32f4::GPIOConfiguration::MakeAF(GPIOA, GPIO_Pin_3, GPIO_AF_TIM5);
@@ -189,6 +189,7 @@ void ResmodMainTask::ResmodTask(void *inst) {
   paramstim1.timbase = TIM1;
   stm32f4::TimerBase adcv_timbase(paramstim1);
   adcv_timbase.Configure(100E3);
+
   stm32f4::TimerBaseParams paramstim2;
   paramstim2.timbase = TIM2;
   stm32f4::TimerBase adci_timbase(paramstim2);
@@ -213,8 +214,8 @@ void ResmodMainTask::ResmodTask(void *inst) {
   // ---Channel 2---
   // Sets up output compare registers to perform a DMA transfer into the SPI
   // TX registers.  This ocurrs ~3 us after the rising edge of the Cnv signal.
-  instance.InitADC_DMAOCSPITx(SPI1, DMA2_Stream2, DMA_Channel_6);
-  instance.InitADC_DMAOCSPITx(SPI2, DMA1_Stream6, DMA_Channel_3);
+  instance.InitADC_DMAOCSPITx(SPI1, DMA2_Stream2, DMA_Channel_6);			//TIM1_CH2
+  instance.InitADC_DMAOCSPITx(SPI2, DMA1_Stream6, DMA_Channel_3);			//TIM2_CH2
   stm32f4::TimerOutputCompare adci_timocch2(adci_timbase,
                                       stm32f4::OutputCompareChannel::kCH2);
   adci_timocch2.ConfigureCompare(9);
@@ -239,8 +240,8 @@ void ResmodMainTask::ResmodTask(void *inst) {
 
   stm32f4::NVICConfiguration::Enable(DMA2_Stream0_IRQn, 5); // SPI1 DMA RX
   stm32f4::NVICConfiguration::Enable(DMA1_Stream3_IRQn, 5); // SPI2 DMA RX
-  stm32f4::NVICConfiguration::Enable(DMA1_Stream2_IRQn, 5); // SPI2 DMA RX
-  stm32f4::NVICConfiguration::Enable(TIM5_IRQn, 4); // SPI2 DMA RX
+  stm32f4::NVICConfiguration::Enable(DMA1_Stream2_IRQn, 5); // SPI2 DMA RX  ??
+  stm32f4::NVICConfiguration::Enable(TIM5_IRQn, 4); // SPI2 DMA RX  TIM5
 
   CalculationTask calctask;
   g_calctask = &calctask;
