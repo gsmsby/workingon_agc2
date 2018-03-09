@@ -45,10 +45,14 @@ CalcModule::CalcModule(const uint32_t gain) {
 
   //debugbuff_ = new int16_t[313];
   //debugindex_ = SEGGER_RTT_AllocUpBuffer("JScope_U2", debugbuff_, 626, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+//  constexpr uint32_t size = sizeof(float[400]);
+  debugbuff_ = new float[400];
+  debugindex_ = SEGGER_RTT_AllocUpBuffer("JScope_i2i2", debugbuff_, sizeof(float[400]), SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 
-  debugbuff_ = new float[313];
-  debugindex_ = SEGGER_RTT_AllocUpBuffer("JScope_U2", debugbuff_, 626, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 
+
+   offs_rtt_ = new float ;
+   offs_rtt_id_ = SEGGER_RTT_AllocUpBuffer("0",offs_rtt_ , 1, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 }
 
 CalcModule::~CalcModule() {
@@ -89,20 +93,28 @@ CalcModule::PerformCalculation(VTable_t& vt,
 
 
 
-	for (j=0; j < MAX_RECORD_NO; j++)
+	for (j=0; j < MAX_RECORD_NO; j++) {
 		//converting to +/- 1 amplitude, assuming 16 bit ADC unsigned
+		uint16_t t[2];
+		t[0] = vt[j];
+		t[1] = it[j];
 		temp_v[j] = 0.00003051757*vt[j];
-
-	for (j=0; j < MAX_RECORD_NO; j++)
-		//assuming 16 bit ADC unsigned
 		temp_i[j] = 0.00003051757*it[j];
+		SEGGER_RTT_Write(debugindex_, t, sizeof(t));
+	}
 
-	SEGGER_RTT_Write(0, temp_i, 312);
+//	for (j=0; j < MAX_RECORD_NO; j++)
+//		//assuming 16 bit ADC unsigned
+//		temp_i[j] = 0.00003051757*it[j];
+
+
 	//DC offset removal
 	dc_offset = 0;
  	for (j=0; j < MAX_RECORD_NO; j++)
 		dc_offset += temp_v[j];
 	dc_offset = dc_offset / MAX_RECORD_NO;
+
+	//SEGGER_RTT_printf(offs_rtt_id_,dc_offset );
 
 	for (j=0; j < MAX_RECORD_NO; j++)
 		temp_v[j] -= dc_offset;
@@ -175,6 +187,10 @@ CalcModule::PerformCalculation(VTable_t& vt,
 
 	avg_resist = avg_resist/(MAX_RECORD_NO-120+1);
 
+	for (auto i = 0 ; i < 100 ; ++i) {
+		uint32_t t = 0;
+		SEGGER_RTT_Write(debugindex_, &t, sizeof(t));
+	}
 
 
 

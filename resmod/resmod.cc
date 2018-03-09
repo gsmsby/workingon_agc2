@@ -160,10 +160,15 @@ void ResmodMainTask::ResmodTask(void *inst) {
   stm32f4::GPIOConfiguration::MakeOutput(GPIOA, I_PGA_G1_Pin|I_PGA_G0_Pin);
 
   ///void GPIO_SetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
+////pga current gain 64
+//  GPIO_SetBits (GPIOB,I_PGA_G3_Pin);
+//  GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
 
-  GPIO_SetBits (GPIOB,I_PGA_G3_Pin);
+
+  //pga current gain 16
+  GPIO_SetBits (GPIOC,I_PGA_G2_Pin);
+  GPIO_SetBits (GPIOA,I_PGA_G1_Pin);
   GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
-
 
   //pga voltage gain 32
   /*HAL_GPIO_WritePin(GPIOC, V_PGA_G3_Pin, GPIO_PIN_SET);
