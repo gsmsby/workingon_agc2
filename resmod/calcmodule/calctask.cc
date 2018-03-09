@@ -39,7 +39,7 @@ CalculationTask::CalculationTask():pvarr_(nullptr), piarr_(nullptr) {
   mutv_ = xSemaphoreCreateBinary();
   muti_ = xSemaphoreCreateBinary();
 
-  xTaskCreate(CalcTask, "calc_main", (32 * 1024) / sizeof(portSTACK_TYPE),
+  xTaskCreate(CalcTask, "calc_main", (40 * 1024) / sizeof(portSTACK_TYPE),
               this, 2, &taskhandle_);
 }
 
@@ -83,7 +83,8 @@ void CalculationTask::CalcTask(void* inst) {
     calcmod.PerformCalculation(waveform_v, waveform_i);
 
     //remove this later !
-    vTaskDelayUntil(&curtime, 10);
+//    vTaskDelayUntil(&curtime, 10);
+    vTaskDelay(100);
 
     DMA_ClearITPendingBit(DMA1_Stream2, DMA_IT_TCIF2);
     DMA_ITConfig(DMA1_Stream2, DMA_IT_TC, ENABLE);

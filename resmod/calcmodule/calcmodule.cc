@@ -36,7 +36,7 @@ using namespace resmod;
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 //extern const float CalcModule::Ref_sine_ ;
-
+int temp3;
 
  //float CalcModule::ref_sine_ [] = {0,0};
 
@@ -85,6 +85,7 @@ CalcModule::PerformCalculation(VTable_t& vt,
 
 	float32_t* inputf32_lpf;
 	float32_t* outputf32_lpf;
+
 
 	arm_fir_instance_f32 s;
 	float32_t firstatef32[BLOCK_SIZE + NUM_TAPS - 1];
@@ -186,6 +187,15 @@ CalcModule::PerformCalculation(VTable_t& vt,
 		avg_resist += resist_value[j] ;
 
 	avg_resist = avg_resist/(MAX_RECORD_NO-120+1);
+
+
+	temp3 ++;
+	if (temp3 == 10)
+	{
+
+		temp3 = 0;
+	}
+
 
 	for (auto i = 0 ; i < 100 ; ++i) {
 		uint32_t t = 0;
