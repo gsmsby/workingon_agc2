@@ -27,6 +27,9 @@
 #include "tables.h"
 #include <array>
 
+
+
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define TEST_LENGTH_SAMPLES  MAX_RECORD_NO
@@ -34,6 +37,7 @@
 
 using namespace resmod;
 /* Private macro -------------------------------------------------------------*/
+extern float resist_can;
 /* Private variables ---------------------------------------------------------*/
 //extern const float CalcModule::Ref_sine_ ;
 int temp3;
@@ -62,6 +66,8 @@ CalcModule::~CalcModule() {
 ResistivityResults
 CalcModule::PerformCalculation(VTable_t& vt,
                                ITable_t& it) {
+
+
 
 	float temp_v [MAX_RECORD_NO];
 	float temp_i [MAX_RECORD_NO];
@@ -187,6 +193,9 @@ CalcModule::PerformCalculation(VTable_t& vt,
 		avg_resist += resist_value[j] ;
 
 	avg_resist = avg_resist/(MAX_RECORD_NO-120+1);
+
+	resist_can = avg_resist * 200;
+
 
 
 	temp3 ++;
