@@ -84,8 +84,8 @@ main(int argc, char* argv[]) {
 
   new FreeRTOS([]{});
   new resmod::ResmodMainTask;
-  adara::rtos::OS::TaskStart(*(new DigitalConeCan), "dccan", 4096,
-                            adara::rtos::TaskPriority::kHigh);
+//  adara::rtos::OS::TaskStart(*(new DigitalConeCan), "dccan", 4096,
+//                            adara::rtos::TaskPriority::kHigh);
 
 	/* start the rtos */
 	vTaskStartScheduler();
