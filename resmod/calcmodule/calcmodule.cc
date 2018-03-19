@@ -38,6 +38,9 @@
 using namespace resmod;
 /* Private macro -------------------------------------------------------------*/
 extern float resist_can;
+
+extern uint8_t gain_value;
+extern uint8_t gain_flag ;
 /* Private variables ---------------------------------------------------------*/
 //extern const float CalcModule::Ref_sine_ ;
 int temp3;
@@ -87,6 +90,9 @@ CalcModule::PerformCalculation(VTable_t& vt,
 
 
 	float dc_offset;
+	/////
+	float power_i =0;
+
 	uint16_t j;
 
 	float32_t* inputf32_lpf;
@@ -110,6 +116,19 @@ CalcModule::PerformCalculation(VTable_t& vt,
 		SEGGER_RTT_Write(debugindex_, t, sizeof(t));
 	}
 
+	for (j=0; j < MAX_RECORD_NO; j++)
+		power_i = power_i + (temp_i[j] * temp_i[j]);
+
+	if ((0.003205 * power_i ) > 0.15)
+	{
+
+
+
+	}
+	else
+	{
+
+	}
 //	for (j=0; j < MAX_RECORD_NO; j++)
 //		//assuming 16 bit ADC unsigned
 //		temp_i[j] = 0.00003051757*it[j];
