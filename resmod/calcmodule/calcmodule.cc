@@ -58,8 +58,8 @@ CalcModule::CalcModule(const uint32_t gain) {
 
 
 
-   offs_rtt_ = new float ;
-   offs_rtt_id_ = SEGGER_RTT_AllocUpBuffer("0",offs_rtt_ , 1, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+  // offs_rtt_ = new float ;
+  // offs_rtt_id_ = SEGGER_RTT_AllocUpBuffer("0",offs_rtt_ , 1, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 }
 
 CalcModule::~CalcModule() {

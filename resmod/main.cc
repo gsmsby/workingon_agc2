@@ -42,6 +42,8 @@ extern unsigned int _HeapCCM_Begin;
 extern unsigned int _HeapCCM_Limit;
 
 float resist_can=0;
+uint8_t gain_value;
+uint8_t gain_flag ;
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
@@ -60,18 +62,18 @@ main(int argc, char* argv[]) {
 	/* initialize rtos */
 	/* define the heap regions for the rtos */
 	HeapRegion_t xhregions[] = {
-		{NULL, 0},
-		{NULL, 0}
+			{NULL, 0},
+			{NULL, 0}
 	};
 	xhregions[0].pucStartAddress = (uint8_t *)&_HeapCCM_Begin;
 	xhregions[0].xSizeInBytes = (size_t)((size_t)&_HeapCCM_Limit -
-								(size_t)&_HeapCCM_Begin);
+			(size_t)&_HeapCCM_Begin);
 	vPortDefineHeapRegions(xhregions);
 
 
 	float resist_can=0;
 
-//	// Debug settings
+	//	// Debug settings
 	DBGMCU_APB2PeriphConfig(DBGMCU_TIM1_STOP, ENABLE);
 	DBGMCU_APB1PeriphConfig(DBGMCU_TIM2_STOP, ENABLE);
 	DBGMCU_APB1PeriphConfig(DBGMCU_TIM3_STOP, ENABLE);
@@ -79,13 +81,13 @@ main(int argc, char* argv[]) {
 
 	/* perform support lib initialization */
 	/* segger debug utils init */
-  SEGGER_RTT_Init();
-  SEGGER_SYSVIEW_Conf();
+	SEGGER_RTT_Init();
+	SEGGER_SYSVIEW_Conf();
 
-  new FreeRTOS([]{});
-  new resmod::ResmodMainTask;
-//  adara::rtos::OS::TaskStart(*(new DigitalConeCan), "dccan", 4096,
-//                            adara::rtos::TaskPriority::kHigh);
+	new FreeRTOS([]{});
+	new resmod::ResmodMainTask;
+	//  adara::rtos::OS::TaskStart(*(new DigitalConeCan), "dccan", 4096,
+	//                            adara::rtos::TaskPriority::kHigh);
 
 	/* start the rtos */
 	vTaskStartScheduler();

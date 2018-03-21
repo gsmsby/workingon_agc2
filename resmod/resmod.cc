@@ -75,6 +75,9 @@ LTC2336SPIDMATrigger * g_adcvtrigger;
 stm32f4::TimerBase * g_adcv_timbase;  // Timer base clock
 stm32f4::TimerBase * g_adci_timbase;  // Timer base clock
 
+extern uint8_t gain_value;
+extern uint8_t gain_flag ;
+
 //drivers::ISL28634  isl28634_i;
 
 
@@ -172,24 +175,34 @@ void ResmodMainTask::ResmodTask(void *inst) {
 
 
   //pga current gain 176
-  GPIO_SetBits(GPIOB, I_PGA_G4_Pin);
-  GPIO_SetBits(GPIOB, I_PGA_G3_Pin);
-  GPIO_SetBits (GPIOC,I_PGA_G1_Pin);
-
-  GPIO_ResetBits (GPIOC,I_PGA_G2_Pin);
-
-  GPIO_ResetBits (GPIOA,I_PGA_G0_Pin);
+//  GPIO_SetBits(GPIOB, I_PGA_G4_Pin);
+//  GPIO_SetBits(GPIOB, I_PGA_G3_Pin);
+//  GPIO_SetBits (GPIOC,I_PGA_G1_Pin);
+//
+//  GPIO_ResetBits (GPIOC,I_PGA_G2_Pin);
+//
+//  GPIO_ResetBits (GPIOA,I_PGA_G0_Pin);
 
 
   //gain 16
 
-//  GPIO_ResetBits(GPIOB, I_PGA_G4_Pin);
+  GPIO_ResetBits(GPIOB, I_PGA_G4_Pin);
+  GPIO_ResetBits(GPIOB, I_PGA_G3_Pin);
+
+  GPIO_SetBits (GPIOC,I_PGA_G2_Pin);
+  GPIO_SetBits (GPIOC,I_PGA_G1_Pin);
+  GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
+
+
+  //gain 22 :
+
+
 //  GPIO_ResetBits(GPIOB, I_PGA_G3_Pin);
 //
+//  GPIO_SetBits (GPIOB, I_PGA_G4_Pin);
 //  GPIO_SetBits (GPIOC,I_PGA_G2_Pin);
 //  GPIO_SetBits (GPIOC,I_PGA_G1_Pin);
 //  GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
-
   //pga voltage gain 32
   /*HAL_GPIO_WritePin(GPIOC, V_PGA_G3_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOC, V_PGA_G2_Pin, GPIO_PIN_RESET);
