@@ -26,7 +26,30 @@
 #include "arm_math.h"
 #include "tables.h"
 #include <array>
+#include <stm32f4xx.h>
+#include <resmod/lowlevelutil/stm32f4gpio.h>
 
+
+#define V_PGA_G4_Pin GPIO_Pin_13
+
+#define V_PGA_G3_Pin GPIO_Pin_14
+
+#define V_PGA_G2_Pin GPIO_Pin_15
+
+
+#define I_PGA_G0_Pin GPIO_Pin_7
+
+#define I_PGA_G1_Pin GPIO_Pin_4
+
+#define I_PGA_G2_Pin GPIO_Pin_5
+
+#define I_PGA_G3_Pin GPIO_Pin_0
+
+#define I_PGA_G4_Pin GPIO_Pin_1
+
+#define V_PGA_G0_Pin GPIO_Pin_6
+
+#define V_PGA_G1_Pin GPIO_Pin_7
 
 
 
@@ -92,6 +115,7 @@ CalcModule::PerformCalculation(VTable_t& vt,
 	float dc_offset;
 	/////
 	float power_i =0;
+	int gain_i =0;
 
 	uint16_t j;
 
@@ -119,16 +143,50 @@ CalcModule::PerformCalculation(VTable_t& vt,
 	for (j=0; j < MAX_RECORD_NO; j++)
 		power_i = power_i + (temp_i[j] * temp_i[j]);
 
-	if ((0.003205 * power_i ) > 0.15)
+//	if (gain_value == 1)
+//		gain_i = 176;
+//	else
+//		gain_i = 16;
+
+	//if (((0.003205 * power_i / gain_i) > 0.15) || ((0.003205 * power_i / gain_i) < 0.01))
+	/*if (((1000 * power_i / gain_i/gain_i) > 3) || ((1000 * power_i / gain_i/gain_i) < 0.15))
+
 	{
+
+		gain_flag = 1;	//there is a gain change
+		//toggle gain_value
+		gain_value ^= gain_value;
+		if (gain_value == 1 )
+		{
+			GPIO_SetBits(GPIOB, I_PGA_G4_Pin);
+			GPIO_SetBits(GPIOB, I_PGA_G3_Pin);
+			GPIO_SetBits (GPIOC,I_PGA_G1_Pin);
+
+			GPIO_ResetBits (GPIOC,I_PGA_G2_Pin);
+
+			GPIO_ResetBits (GPIOA,I_PGA_G0_Pin);
+
+
+		}
+		else
+		{
+
+			GPIO_ResetBits(GPIOB, I_PGA_G4_Pin);
+			GPIO_ResetBits(GPIOB, I_PGA_G3_Pin);
+
+			GPIO_SetBits (GPIOC,I_PGA_G2_Pin);
+			GPIO_SetBits (GPIOC,I_PGA_G1_Pin);
+			GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
+
+		};
+
 
 
 
 	}
 	else
-	{
+		gain_flag = 0;*/
 
-	}
 //	for (j=0; j < MAX_RECORD_NO; j++)
 //		//assuming 16 bit ADC unsigned
 //		temp_i[j] = 0.00003051757*it[j];
@@ -213,12 +271,18 @@ CalcModule::PerformCalculation(VTable_t& vt,
 
 	avg_resist = avg_resist/(MAX_RECORD_NO-120+1);
 
-	resist_can = avg_resist * 200;
+	if (gain_flag == 0)
+		resist_can = avg_resist * 200 *16 / gain_i ;
+
+
+
+
+
 
 
 
 	temp3 ++;
-	if (temp3 == 10)
+	if (temp3 == 9)
 	{
 
 		temp3 = 0;

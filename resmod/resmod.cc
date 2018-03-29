@@ -162,18 +162,6 @@ void ResmodMainTask::ResmodTask(void *inst) {
   stm32f4::GPIOConfiguration::MakeOutput(GPIOC, I_PGA_G2_Pin|I_PGA_G1_Pin);
   stm32f4::GPIOConfiguration::MakeOutput(GPIOA, I_PGA_G0_Pin);
 
-  ///void GPIO_SetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
-////pga current gain 64
-//  GPIO_SetBits (GPIOB,I_PGA_G3_Pin);
-//  GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
-
-
-  //pga current gain 16
-//  GPIO_SetBits (GPIOC,I_PGA_G2_Pin);
-//  GPIO_SetBits (GPIOA,I_PGA_G1_Pin);
-//  GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
-
-
   //pga current gain 176
 //  GPIO_SetBits(GPIOB, I_PGA_G4_Pin);
 //  GPIO_SetBits(GPIOB, I_PGA_G3_Pin);
@@ -183,15 +171,47 @@ void ResmodMainTask::ResmodTask(void *inst) {
 //
 //  GPIO_ResetBits (GPIOA,I_PGA_G0_Pin);
 
+  gain_value = 1;
+  gain_flag = 0;
+
+  //gain 32
+
+//  GPIO_SetBits(GPIOB, I_PGA_G3_Pin);
+//
+//  GPIO_ResetBits (GPIOB, I_PGA_G4_Pin);
+//  GPIO_ResetBits (GPIOC,I_PGA_G2_Pin);
+//  GPIO_ResetBits (GPIOC,I_PGA_G1_Pin);
+//  GPIO_ResetBits (GPIOA,I_PGA_G0_Pin);
+
+
+  //gain 44
+//  GPIO_SetBits (GPIOB, I_PGA_G4_Pin);
+//  GPIO_SetBits(GPIOB, I_PGA_G3_Pin);
+//
+//
+//  GPIO_ResetBits (GPIOC,I_PGA_G2_Pin);
+//  GPIO_ResetBits (GPIOC,I_PGA_G1_Pin);
+//  GPIO_ResetBits (GPIOA,I_PGA_G0_Pin);
 
   //gain 16
 
-  GPIO_ResetBits(GPIOB, I_PGA_G4_Pin);
-  GPIO_ResetBits(GPIOB, I_PGA_G3_Pin);
+//  GPIO_ResetBits(GPIOB, I_PGA_G4_Pin);
+//  GPIO_ResetBits(GPIOB, I_PGA_G3_Pin);
+//
+//  GPIO_SetBits (GPIOC,I_PGA_G2_Pin);
+//  GPIO_SetBits (GPIOC,I_PGA_G1_Pin);
+//  GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
 
+  //gain 11 :
+
+  GPIO_ResetBits(GPIOB, I_PGA_G3_Pin);
+  GPIO_ResetBits (GPIOA,I_PGA_G0_Pin);
+
+  GPIO_SetBits(GPIOB, I_PGA_G4_Pin);
   GPIO_SetBits (GPIOC,I_PGA_G2_Pin);
   GPIO_SetBits (GPIOC,I_PGA_G1_Pin);
-  GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
+
+//
 
 
   //gain 22 :
@@ -203,6 +223,7 @@ void ResmodMainTask::ResmodTask(void *inst) {
 //  GPIO_SetBits (GPIOC,I_PGA_G2_Pin);
 //  GPIO_SetBits (GPIOC,I_PGA_G1_Pin);
 //  GPIO_SetBits (GPIOA,I_PGA_G0_Pin);
+
   //pga voltage gain 32
   /*HAL_GPIO_WritePin(GPIOC, V_PGA_G3_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOC, V_PGA_G2_Pin, GPIO_PIN_RESET);
@@ -215,14 +236,32 @@ void ResmodMainTask::ResmodTask(void *inst) {
 
 
   //gain 16:
+//  GPIO_ResetBits (GPIOC,V_PGA_G4_Pin);
+//  GPIO_ResetBits (GPIOC,V_PGA_G3_Pin);
+//
+//
+//GPIO_SetBits (GPIOC,V_PGA_G2_Pin);
+//GPIO_SetBits (GPIOB,V_PGA_G1_Pin);
+// GPIO_SetBits (GPIOB,V_PGA_G0_Pin);
+
+
+
+  //gain 11:
+
+//  GPIO_ResetBits (GPIOC,V_PGA_G3_Pin);
+//  GPIO_ResetBits (GPIOB,V_PGA_G0_Pin);
+//
+//  GPIO_SetBits (GPIOC,V_PGA_G4_Pin);
+//  GPIO_SetBits (GPIOC,V_PGA_G2_Pin);
+//  GPIO_SetBits (GPIOB,V_PGA_G1_Pin);
+
+//gain 8 :
   GPIO_ResetBits (GPIOC,V_PGA_G4_Pin);
   GPIO_ResetBits (GPIOC,V_PGA_G3_Pin);
+  GPIO_ResetBits (GPIOB,V_PGA_G0_Pin);
 
-
-GPIO_SetBits (GPIOC,V_PGA_G2_Pin);
-GPIO_SetBits (GPIOB,V_PGA_G1_Pin);
- GPIO_SetBits (GPIOB,V_PGA_G0_Pin);
-
+  GPIO_SetBits (GPIOC,V_PGA_G2_Pin);
+  GPIO_SetBits (GPIOB,V_PGA_G1_Pin);
 
   //isl28634_i.setgain(50);
 
